@@ -1,0 +1,10 @@
+data
+*.xml
+*.vec
+*.dat
+positive
+negative
+pos
+101_ObjectCategories
+random
+*.swp
