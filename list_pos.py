@@ -11,8 +11,10 @@ parser.add_argument("-e", "--extension", type=str, default="jpg")
 parser.add_argument("-n", "--number", type=int)
 args = parser.parse_args()
 
-positives = glob("%s/*.%s" % (args.input, args.extension))[:args.number]
 
+print 'Trying to list', args.number, 'files...'
+
+positives = glob("%s/*.%s" % (args.input, args.extension))[:args.number]
 
 def trans(filename):
     unescape = filename.replace(os.sep, '/')

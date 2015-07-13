@@ -15,6 +15,7 @@ parser.add_argument("-n", "--number", type=int)
 
 args = parser.parse_args()
 
+print 'Trying to generate', args.number, 'negative samples'
 
 def main():
     src_imgs = glob(args.input + "/*.jpg")
