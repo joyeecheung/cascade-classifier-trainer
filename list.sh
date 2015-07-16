@@ -1,20 +1,33 @@
-echo 'Copying files...'
+NUM_POS=300  # number of positive samples you have
+NUM_NEG=500  # number of negative samples you want to generate
+POS_WIDTH=28  # width of positive samples
+POS_HEIGHT=28 # height of posotive samples
+NEG_WIDTH=80  # width of generated negative samples
+NEG_HEIGHT=80  # height of generated negative samples
+NUM_STAGES=10  # number of stages for training
+S=10 # skipped samples
 
-cp `find pos -name "*.jpg" | head -n 8000` positive
+# we do a simple formula here...
+# for a detailed formula,
+# see http://answers.opencv.org/question/4368/
+let "POS=NUM_POS-S"
 
-echo 'Generating negative samples...'
-python get_negative.py -i random -o negative -w 80 --height 80 -n 10000
+echo "Copying ${NUM_POS} files..."
+cp `find pos -name "*.jpg" | head -n $NUM_POS` positive
 
-echo 'Generating positive data description...'
-python list_pos.py -w 28 --height 28 -n 8000
-echo 'Generating negative data description...'
+echo "Generating ${NUM_NEG} negative samples..."
+python get_negative.py -i random -o negative -w $NEG_WIDTH --height $NEG_HEIGHT -n $NUM_NEG
+
+echo "Generating positive data description..."
+python list_pos.py -w $POS_WIDTH --height $POS_HEIGHT -n $NUM_POS
+echo "Generating negative data description..."
 find negative -name '*.jpg' > negative.dat
 
-echo 'Creating samples'
-opencv_createsamples -info positive.dat -vec vector.vec -num 8000 -w 28 -h 28
+echo "Creating samples"
+opencv_createsamples -info positive.dat -vec vector.vec -num $NUM_POS -w $POS_WIDTH -h $POS_HEIGHT
 
-echo 'Recreate data folder'
-rm -rf data
-mkdir data  # empty folder
+echo "Recreate classifier folder"
+rm -rf classifier
+mkdir classifier  # empty folder
 
-# opencv_traincascade -data data -vec vector.vec -bg negative.dat -numPos 7000 -numNeg 9000 -w 28 -h 28 -numStages 10
+opencv_traincascade -data classifier -vec vector.vec -bg negative.dat -numPos $POS -numNeg $NUM_NEG -w $POS_WIDTH -h $POS_HEIGHT -numStages $NUM_STAGES

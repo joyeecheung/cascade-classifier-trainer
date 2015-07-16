@@ -24,6 +24,8 @@ def main():
     count = 0
     w, h = args.width, args.height
     for src in src_imgs:
+        if count > args.number:
+            break
         im = Image.open(src).convert('1', dither=Image.NONE)
         W, H = im.size
 
